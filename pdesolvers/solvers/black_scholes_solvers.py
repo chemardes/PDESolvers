@@ -3,6 +3,7 @@ import pdesolvers.solution as sol
 import pdesolvers.pdes.black_scholes as bse
 import pdesolvers.enums.enums as enum
 import pdesolvers.utils.utility as utility
+import time
 
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
@@ -18,6 +19,8 @@ class BlackScholesExplicitSolver:
 
         :return: the solver instance with the computed option values
         """
+
+        start = time.perf_counter()
 
         S = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
         T = self.equation.generate_grid(self.equation.expiry, self.equation.t_nodes)
@@ -64,7 +67,10 @@ class BlackScholesExplicitSolver:
 
             delta, gamma, theta = utility.BlackScholesHelper.calculate_greeks_at_boundary(self.equation, delta, gamma, theta, tau, V, S, ds)
 
-        return sol.SolutionBlackScholes(V, T, S, dt, ds, delta, gamma, theta, self.equation.option_type)
+        end = time.perf_counter()
+        duration = end - start
+
+        return sol.SolutionBlackScholes(V, T, S, dt, ds, duration, delta, gamma, theta, self.equation.option_type)
 
 
 class BlackScholesCNSolver:
@@ -79,6 +85,7 @@ class BlackScholesCNSolver:
         :return: the solver instance with the computed option values
         """
 
+        start = time.perf_counter()
         S = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
         T = self.equation.generate_grid(self.equation.expiry, self.equation.t_nodes)
 
@@ -130,5 +137,8 @@ class BlackScholesCNSolver:
 
             delta, gamma, theta = utility.BlackScholesHelper.calculate_greeks_at_boundary(self.equation, delta, gamma, theta, tau, V, S, ds)
 
-        return sol.SolutionBlackScholes(V, T, S, dt, ds, delta, gamma, theta, self.equation.option_type)
+        end = time.perf_counter()
+        duration = end - start
+
+        return sol.SolutionBlackScholes(V, T, S, dt, ds, duration, delta, gamma, theta, self.equation.option_type)
 
