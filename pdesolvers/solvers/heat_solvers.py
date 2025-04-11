@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import pdesolvers.solution as sol
 import pdesolvers.pdes.heat_1d as heat
@@ -15,6 +17,8 @@ class Heat1DExplicitSolver:
 
         :return: the solver instance with the computed temperature values
         """
+
+        start = time.perf_counter()
 
         x = self.equation.generate_grid(self.equation.length, self.equation.x_nodes)
         t = self.equation.generate_grid(self.equation.time, self.equation.t_nodes)
@@ -42,7 +46,10 @@ class Heat1DExplicitSolver:
             for i in range(1, self.equation.x_nodes - 1):
                 u[tau+1,i] = u[tau, i] + (dt * self.equation.k * (u[tau, i-1] - 2 * u[tau, i] + u[tau, i+1]) / dx**2)
 
-        return sol.Solution1D(u, x, t, dx, dt)
+        end = time.perf_counter()
+        duration = end - start
+
+        return sol.Solution1D(u, x, t, dx, dt, duration)
 
 class Heat1DCNSolver:
     def __init__(self, equation: heat.HeatEquation):
@@ -54,6 +61,8 @@ class Heat1DCNSolver:
 
         :return: the solver instance with the computed temperature values
         """
+
+        start = time.perf_counter()
 
         x = self.equation.generate_grid(self.equation.length, self.equation.x_nodes)
         t = self.equation.generate_grid(self.equation.time, self.equation.t_nodes)
@@ -85,4 +94,7 @@ class Heat1DCNSolver:
 
             u[tau+1, 1:-1] = spsolve(lhs, rhs)
 
-        return sol.Solution1D(u, x, t, dx, dt)
+        end = time.perf_counter()
+        duration = end - start
+
+        return sol.Solution1D(u, x, t, dx, dt, duration)

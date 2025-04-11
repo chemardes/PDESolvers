@@ -6,12 +6,13 @@ from matplotlib import pyplot as plt
 
 class Solution:
 
-    def __init__(self, result, x_grid, y_grid, dx, dy):
+    def __init__(self, result, x_grid, y_grid, dx, dy, duration):
         self.result = result
         self.x_grid = x_grid
         self.y_grid = y_grid
         self.dx = dx
         self.dy = dy
+        self.duration = duration
 
     def plot(self):
         """
@@ -45,6 +46,9 @@ class Solution:
         ax.set_ylabel('Y-axis')
         ax.set_zlabel('Value')
         ax.set_title('3D Surface Plot')
+
+    def get_execution_time(self):
+        return self.duration
 
     def __sub__(self, other):
         """
@@ -83,8 +87,8 @@ class Solution:
 
 class Solution1D(Solution):
 
-    def __init__(self, result, x_grid, y_grid, dx, dy):
-        super().__init__(result, x_grid, y_grid, dx, dy)
+    def __init__(self, result, x_grid, y_grid, dx, dy, duration):
+        super().__init__(result, x_grid, y_grid, dx, dy, duration)
 
     def _set_plot_labels(self, ax):
         ax.set_xlabel('Space')
@@ -94,8 +98,8 @@ class Solution1D(Solution):
 
 
 class SolutionBlackScholes(Solution):
-    def __init__(self, result, x_grid, y_grid, dx, dy, delta, gamma, theta, option_type):
-        super().__init__(result, x_grid, y_grid, dx, dy)
+    def __init__(self, result, x_grid, y_grid, dx, dy, duration, delta, gamma, theta, option_type):
+        super().__init__(result, x_grid, y_grid, dx, dy, duration)
         self.option_type = option_type
         self.delta = delta
         self.gamma = gamma
@@ -105,8 +109,8 @@ class SolutionBlackScholes(Solution):
 
         greek_types = {
             enum.Greeks.DELTA : {'data': self.delta, 'title': enum.Greeks.DELTA.value},
-            enum.Greeks.GAMMA : {'data': self.gamma, 'title': enum.Greeks.DELTA.value},
-            enum.Greeks.THETA : {'data': self.theta, 'title': enum.Greeks.DELTA.value}
+            enum.Greeks.GAMMA : {'data': self.gamma, 'title': enum.Greeks.GAMMA.value},
+            enum.Greeks.THETA : {'data': self.theta, 'title': enum.Greeks.THETA.value}
         }
 
         # if greek_type.lower() not in greek_types:
@@ -115,7 +119,7 @@ class SolutionBlackScholes(Solution):
         chosen_greek = greek_types[greek_type]
         greek_data = chosen_greek['data'][:, time_step]
         plt.figure(figsize=(8, 6))
-        plt.plot(self.y_grid, greek_data, label=f"Delta at t={self.x_grid[time_step]:.4f}", color="blue")
+        plt.plot(self.y_grid, greek_data, label=f"{chosen_greek['title']} at t={self.x_grid[time_step]:.4f}", color="grey", alpha=0.8)
 
         plt.title(f"{chosen_greek['title']} vs. Stock Price at t={self.x_grid[time_step]:.4f}")
         plt.xlabel("Stock Price (S)")
@@ -123,6 +127,7 @@ class SolutionBlackScholes(Solution):
         plt.grid()
         plt.legend()
 
+        np.savetxt(f"option_{chosen_greek['title']}.csv", np.column_stack((self.y_grid, greek_data)), delimiter=',', header=f"StockPrice,{chosen_greek['title']}", comments='')
         plt.show()
 
     def _set_plot_labels(self, ax):

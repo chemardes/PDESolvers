@@ -82,7 +82,7 @@ class GeometricBrownianMotion:
 
         fig = plt.figure(figsize=(10,6))
         for i in range(self.__sim):
-            plt.plot(t, S[i])
+            plt.plot(t, S[i], color='grey', alpha=0.3)
 
         plt.title("Simulated Geometric Brownian Motion")
         plt.xlabel("Time (Years)")
@@ -91,7 +91,7 @@ class GeometricBrownianMotion:
 
 
 def main():
-    GeometricBrownianMotion(100, 0.05, 0.03, 1, 365, 100).simulate_gbm().plot()
+    GeometricBrownianMotion(100, 2, 0.3, 1, 365, 100).simulate_gbm().plot()
 
 if __name__ == "__main__":
     main()
