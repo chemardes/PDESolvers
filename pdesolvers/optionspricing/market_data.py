@@ -25,9 +25,6 @@ class HistoricalStockData:
         sigma = self.__stock_data["Log Returns"].std()
         mu = self.__stock_data["Log Returns"].mean()
 
-        # annualized_sigma = self.__stock_data["Log Returns"].std() * np.sqrt(252)
-        # annualized_mu = self.__stock_data["Log Returns"].mean() * 252
-
         return sigma, mu
 
     def get_latest_stock_price(self):

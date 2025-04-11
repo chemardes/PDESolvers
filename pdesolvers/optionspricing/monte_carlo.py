@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 from pdesolvers.enums.enums import OptionType
 
@@ -27,6 +28,7 @@ class MonteCarloPricing:
         self.__time_steps = time_steps
         self.__sim = sim
         self.__S = None
+        self.duration = 0.0
 
     def get_monte_carlo_option_price(self):
 
@@ -50,6 +52,8 @@ class MonteCarloPricing:
         This method calculates the stock prices at each time step for each simulation.
         """
 
+        start = time.perf_counter()
+
         t = self.__generate_grid()
         dt = t[1] - t[0]
 
@@ -67,8 +71,10 @@ class MonteCarloPricing:
                 # calculates stock price based on the incremental difference
                 S[i,j] = S[i, j-1] * np.exp((self.__r - 0.5*self.__sigma**2)*dt + self.__sigma * (B[i, j] - B[i, j - 1]))
 
-        self.__S = S
+        end = time.perf_counter()
+        self.duration = end - start
 
+        self.__S = S
         return self.__S
 
     def __generate_grid(self):
@@ -96,3 +102,6 @@ class MonteCarloPricing:
         plt.xlabel("Time (Years)")
         plt.ylabel("Stock Price")
         plt.show()
+
+    def get_execution_time(self):
+        return self.duration
