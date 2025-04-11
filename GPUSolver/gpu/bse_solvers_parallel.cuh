@@ -524,9 +524,9 @@ Solution<T> solve_bse_cn(T s_max,
     gpuErrChk(cudaMalloc(&d_gamma, (s_nodes + 1) * sizeof(T)));
 
     T *d_alpha_lhs, *d_beta_lhs, * d_gamma_lhs;
-    gpuErrChk(cudaMalloc(&d_alpha_lhs, (vector_size) * sizeof(double)));
-    gpuErrChk(cudaMalloc(&d_beta_lhs, vector_size * sizeof(double)));
-    gpuErrChk(cudaMalloc(&d_gamma_lhs, (vector_size) * sizeof(double)));
+    gpuErrChk(cudaMalloc(&d_alpha_lhs, (vector_size) * sizeof(T)));
+    gpuErrChk(cudaMalloc(&d_beta_lhs, vector_size * sizeof(T)));
+    gpuErrChk(cudaMalloc(&d_gamma_lhs, (vector_size) * sizeof(T)));
 
     T* d_rhs_vector;
     gpuErrChk(cudaMalloc(&d_rhs_vector, vector_size * sizeof(T)));
