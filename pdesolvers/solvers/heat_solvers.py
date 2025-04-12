@@ -82,7 +82,7 @@ class Heat1DCNSolver(Solver):
         u[:, 0] = self.equation.get_left_boundary(t)
         u[:, -1] = self.equation.get_right_boundary(t)
 
-        lhs = utility.Heat1DHelper.build_tridiagonal_matrix(a, b, c, self.equation.x_nodes - 2)
+        lhs = utility.Heat1DHelper._build_tridiagonal_matrix(a, b, c, self.equation.x_nodes - 2)
         rhs = np.zeros(self.equation.x_nodes - 2)
 
         for tau in range(0, self.equation.t_nodes - 1):
