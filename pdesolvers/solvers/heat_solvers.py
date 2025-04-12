@@ -6,8 +6,9 @@ import pdesolvers.pdes.heat_1d as heat
 import pdesolvers.utils.utility as utility
 
 from scipy.sparse.linalg import spsolve
+from pdesolvers.solvers.solver import Solver
 
-class Heat1DExplicitSolver:
+class Heat1DExplicitSolver(Solver):
     def __init__(self, equation: heat.HeatEquation):
         self.equation = equation
 
@@ -51,7 +52,7 @@ class Heat1DExplicitSolver:
 
         return sol.Solution1D(u, x, t, dx, dt, duration)
 
-class Heat1DCNSolver:
+class Heat1DCNSolver(Solver):
     def __init__(self, equation: heat.HeatEquation):
         self.equation = equation
 

@@ -7,8 +7,10 @@ import time
 
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
+from pdesolvers.solvers.solver import Solver
 
-class BlackScholesExplicitSolver:
+
+class BlackScholesExplicitSolver(Solver):
 
     def __init__(self, equation: bse.BlackScholesEquation):
         self.equation = equation
@@ -73,7 +75,7 @@ class BlackScholesExplicitSolver:
         return sol.SolutionBlackScholes(V, T, S, dt, ds, duration, delta, gamma, theta, self.equation.option_type)
 
 
-class BlackScholesCNSolver:
+class BlackScholesCNSolver(Solver):
 
     def __init__(self, equation: bse.BlackScholesEquation):
         self.equation = equation
