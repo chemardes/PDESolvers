@@ -28,7 +28,7 @@ class MonteCarloPricing:
         self.__time_steps = time_steps
         self.__sim = sim
         self.__S = None
-        self.duration = 0.0
+        self.__duration = 0.0
 
     def get_monte_carlo_option_price(self):
 
@@ -104,4 +104,4 @@ class MonteCarloPricing:
         plt.show()
 
     def get_execution_time(self):
-        return self.duration
+        return self.__duration
