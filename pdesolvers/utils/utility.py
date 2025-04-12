@@ -8,7 +8,7 @@ import pdesolvers.enums.enums as enum
 class Heat1DHelper:
 
     @staticmethod
-    def build_tridiagonal_matrix(a, b, c, nodes):
+    def _build_tridiagonal_matrix(a, b, c, nodes):
         """
         Initialises the tridiagonal matrix on the LHS of the equation
 
@@ -31,7 +31,7 @@ class Heat1DHelper:
 class BlackScholesHelper:
 
     @staticmethod
-    def calculate_greeks_at_boundary(equation, delta, gamma, theta, tau, V, S, ds):
+    def _calculate_greeks_at_boundary(equation, delta, gamma, theta, tau, V, S, ds):
         delta[0, tau] = (V[1, tau+1] - V[0, tau+1]) / ds
         delta[equation.s_nodes, tau] = (V[equation.s_nodes, tau+1] - V[equation.s_nodes-1, tau+1]) / ds
 
@@ -44,7 +44,7 @@ class BlackScholesHelper:
         return delta, gamma, theta
 
     @staticmethod
-    def set_boundary_conditions(equation, T, tau):
+    def _set_boundary_conditions(equation, T, tau):
         """
         Sets the boundary conditions for the Black-Scholes Equation based on option type
 

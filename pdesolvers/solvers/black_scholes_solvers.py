@@ -63,11 +63,11 @@ class BlackScholesExplicitSolver(Solver):
                 V[i, tau] = V[i, tau + 1] - (theta[i, tau] * dt)
 
             # setting boundary conditions
-            lower, upper = utility.BlackScholesHelper.set_boundary_conditions(self.equation, T, tau)
+            lower, upper = utility.BlackScholesHelper._set_boundary_conditions(self.equation, T, tau)
             V[0, tau] = lower
             V[self.equation.s_nodes, tau] = upper
 
-            delta, gamma, theta = utility.BlackScholesHelper.calculate_greeks_at_boundary(self.equation, delta, gamma, theta, tau, V, S, ds)
+            delta, gamma, theta = utility.BlackScholesHelper._calculate_greeks_at_boundary(self.equation, delta, gamma, theta, tau, V, S, ds)
 
         end = time.perf_counter()
         duration = end - start
@@ -137,7 +137,7 @@ class BlackScholesCNSolver(Solver):
             gamma[1:-1, tau] = (V[2:, tau] - 2 * V[1:-1, tau] + V[:-2, tau]) / (ds**2)
             theta[1:-1, tau] = -0.5 * (self.equation.sigma**2) * (S[1:-1]**2) * gamma[1:-1, tau] - self.equation.rate * S[1:-1] * delta[1:-1, tau] + self.equation.rate * V[1:-1, tau]
 
-            delta, gamma, theta = utility.BlackScholesHelper.calculate_greeks_at_boundary(self.equation, delta, gamma, theta, tau, V, S, ds)
+            delta, gamma, theta = utility.BlackScholesHelper._calculate_greeks_at_boundary(self.equation, delta, gamma, theta, tau, V, S, ds)
 
         end = time.perf_counter()
         duration = end - start
