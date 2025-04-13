@@ -4,7 +4,6 @@ import yfinance as yf
 class HistoricalStockData:
     def __init__(self, ticker):
         self.__stock_data = None
-        self.__options = None
         self.__ticker = ticker
 
     def fetch_stock_data(self, start_date, end_date):

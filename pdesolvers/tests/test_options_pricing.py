@@ -82,3 +82,12 @@ class TestMonteCarlo:
         results = test_mc.simulate_gbm()
 
         assert (results[:,0] == mc_pricing_params['S0']).all()
+
+    def test_check_get_execution_time_raises_exception_when_no_simulation_is_run(self, mc_pricing_params):
+
+        test_mc = MonteCarloPricing(
+            OptionType.EUROPEAN_CALL, **mc_pricing_params
+        )
+
+        with pytest.raises(RuntimeError, match="Execution time is not available because the simulation has not been run yet."):
+            test_mc.get_execution_time()

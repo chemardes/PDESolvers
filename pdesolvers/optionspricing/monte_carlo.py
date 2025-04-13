@@ -28,11 +28,13 @@ class MonteCarloPricing:
         self.__time_steps = time_steps
         self.__sim = sim
         self.__S = None
+        self.__run = False
         self.__duration = 0.0
 
     def get_monte_carlo_option_price(self):
 
         S = self.simulate_gbm()
+        self.__run = True
 
         if self.__option_type == OptionType.EUROPEAN_CALL:
             payoff = np.maximum(S[:, -1] - self.__strike_price, 0)
@@ -72,7 +74,7 @@ class MonteCarloPricing:
                 S[i,j] = S[i, j-1] * np.exp((self.__r - 0.5*self.__sigma**2)*dt + self.__sigma * (B[i, j] - B[i, j - 1]))
 
         end = time.perf_counter()
-        self.duration = end - start
+        self.__duration = end - start
 
         self.__S = S
         return self.__S
@@ -104,4 +106,7 @@ class MonteCarloPricing:
         plt.show()
 
     def get_execution_time(self):
+        if not self.__run:
+            raise RuntimeError("Execution time is not available because the simulation has not been run yet.")
+
         return self.__duration
