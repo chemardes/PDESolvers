@@ -4,6 +4,15 @@ import pdesolvers.enums.enums as enum
 
 from matplotlib import pyplot as plt
 
+import logging
+
+logging.basicConfig(
+    level = logging.INFO,
+    format = "{asctime} - {levelname} - {message}",
+    style="{",
+    datefmt="%Y-%m-%d %H:%M",
+)
+
 class Solution:
 
     def __init__(self, result, x_grid, y_grid, dx, dy, duration):
@@ -14,23 +23,28 @@ class Solution:
         self.dy = dy
         self.duration = duration
 
-    def plot(self):
+    def plot(self, export=False):
         """
         Generates a 3D surface plot of the option values across a grid of asset prices and time
 
         :return: 3D surface plot
         """
 
+        plt.rcParams['font.family'] = 'monospace'
+        plt.rcParams['font.size'] = 10
+
         X, Y = np.meshgrid(self.x_grid, self.y_grid)
 
         # plotting the 3d surface
         fig = plt.figure(figsize=(10,6))
         ax = fig.add_subplot(111, projection='3d')
-        surf = ax.plot_surface(X, Y, self.result, cmap='viridis')
+        surf = ax.plot_surface(X, Y, self.result, cmap='plasma', alpha=0.8)
 
         self._set_plot_labels(ax)
 
-        fig.colorbar(surf, shrink=0.5, aspect=5)
+        if export:
+            plt.savefig("solution_results.pdf", format="pdf", bbox_inches="tight", pad_inches=0.5)
+
         plt.show()
 
     def get_result(self):
@@ -42,12 +56,21 @@ class Solution:
         return self.result
 
     def _set_plot_labels(self, ax):
+        """
+        Sets labels for the plot
+        :param ax: axes
+        """
+        # font = {'family': 'serif'}
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')
         ax.set_zlabel('Value')
         ax.set_title('3D Surface Plot')
 
     def get_execution_time(self):
+        """
+        Gets the time taken for the solver to solve the equation
+        :return: duration
+        """
         return self.duration
 
     def __sub__(self, other):
@@ -56,6 +79,8 @@ class Solution:
         :param other: the grid to be compared against
         :return: the error (difference) between the two solutions
         """
+
+        logging.info("Interpolating solutions with RBFInterpolator")
 
         sparser_grid = other
         denser_grid = self
@@ -83,6 +108,8 @@ class Solution:
 
                 diff = np.max([diff, np.abs(val_dense_x_y - val_sparse_x_y)])
 
+        logging.info("Interpolation completed.")
+
         return diff
 
 class Solution1D(Solution):
@@ -91,6 +118,7 @@ class Solution1D(Solution):
         super().__init__(result, x_grid, y_grid, dx, dy, duration)
 
     def _set_plot_labels(self, ax):
+        super()._set_plot_labels(ax)
         ax.set_xlabel('Space')
         ax.set_ylabel('Time')
         ax.set_zlabel('Temperature')
@@ -105,7 +133,7 @@ class SolutionBlackScholes(Solution):
         self.gamma = gamma
         self.theta = theta
 
-    def plot_greek(self, greek_type=enum.Greeks.DELTA, time_step=0):
+    def plot_greek(self, greek_type=enum.Greeks.DELTA, time_step=0, export=False):
 
         greek_types = {
             enum.Greeks.DELTA : {'data': self.delta, 'title': enum.Greeks.DELTA.value},
@@ -127,10 +155,13 @@ class SolutionBlackScholes(Solution):
         plt.grid()
         plt.legend()
 
-        np.savetxt(f"option_{chosen_greek['title']}.csv", np.column_stack((self.y_grid, greek_data)), delimiter=',', header=f"StockPrice,{chosen_greek['title']}", comments='')
+        if export:
+            np.savetxt(f"option_{chosen_greek['title']}.csv", np.column_stack((self.y_grid, greek_data)), delimiter=',', header=f"StockPrice,{chosen_greek['title']}", comments='')
+
         plt.show()
 
     def _set_plot_labels(self, ax):
+        super()._set_plot_labels(ax)
         ax.set_xlabel('Time')
         ax.set_ylabel('Asset Price')
         ax.set_zlabel(f'{self.option_type.value} Option Value')

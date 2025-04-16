@@ -1,4 +1,5 @@
 import time
+import logging
 
 import numpy as np
 import pdesolvers.solution as sol
@@ -7,6 +8,13 @@ import pdesolvers.utils.utility as utility
 
 from scipy.sparse.linalg import spsolve
 from pdesolvers.solvers.solver import Solver
+
+logging.basicConfig(
+    level = logging.INFO,
+    format = "{asctime} - {levelname} - {message}",
+    style="{",
+    datefmt="%Y-%m-%d %H:%M",
+)
 
 class Heat1DExplicitSolver(Solver):
     def __init__(self, equation: heat.HeatEquation):
@@ -18,6 +26,8 @@ class Heat1DExplicitSolver(Solver):
 
         :return: the solver instance with the computed temperature values
         """
+
+        logging.info(f"Starting {self.__class__.__name__} with {self.equation.x_nodes+1} spatial nodes and {self.equation.t_nodes+1} time nodes.")
 
         start = time.perf_counter()
 
@@ -50,6 +60,8 @@ class Heat1DExplicitSolver(Solver):
         end = time.perf_counter()
         duration = end - start
 
+        logging.info(f"Solver completed in {duration} seconds.")
+
         return sol.Solution1D(u, x, t, dx, dt, duration)
 
 class Heat1DCNSolver(Solver):
@@ -62,6 +74,8 @@ class Heat1DCNSolver(Solver):
 
         :return: the solver instance with the computed temperature values
         """
+
+        logging.info(f"Starting {self.__class__.__name__} with {self.equation.x_nodes+1} spatial nodes and {self.equation.t_nodes+1} time nodes.")
 
         start = time.perf_counter()
 
@@ -97,5 +111,7 @@ class Heat1DCNSolver(Solver):
 
         end = time.perf_counter()
         duration = end - start
+
+        logging.info(f"Solver completed in {duration} seconds.")
 
         return sol.Solution1D(u, x, t, dx, dt, duration)
