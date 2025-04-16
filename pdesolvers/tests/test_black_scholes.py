@@ -111,7 +111,18 @@ class TestBlackScholesSolvers:
         result1 = solver.BlackScholesExplicitSolver(self.equation).solve()
         result2 = solver.BlackScholesCNSolver(self.equation).solve()
 
-        diff = np.abs(result1 - result2)
+        diff = result1 - result2
+
+        assert diff < 1e-1
+
+    def test_convergence_between_same_solver_with_different_grid_sizes(self):
+        temp_equation = bse.BlackScholesEquation(OptionType.EUROPEAN_CALL, 300, 100, 0.05, 0.2, 1, 100, 1000)
+
+        result1 = solver.BlackScholesExplicitSolver(self.equation).solve()
+        result2 = solver.BlackScholesExplicitSolver(temp_equation).solve()
+
+        diff = result1 - result2
+        print(diff)
 
         assert diff < 1e-1
 

@@ -4,16 +4,24 @@ import pdesolvers.pdes.black_scholes as bse
 import pdesolvers.enums.enums as enum
 import pdesolvers.utils.utility as utility
 import time
+import logging
 
 from scipy import sparse
 from scipy.sparse.linalg import spsolve
 from pdesolvers.solvers.solver import Solver
 
+logging.basicConfig(
+    level = logging.INFO,
+    format = "{asctime} - {levelname} - {message}",
+    style="{",
+    datefmt="%Y-%m-%d %H:%M",
+)
 
 class BlackScholesExplicitSolver(Solver):
 
     def __init__(self, equation: bse.BlackScholesEquation):
         self.equation = equation
+
 
     def solve(self):
         """
@@ -22,6 +30,8 @@ class BlackScholesExplicitSolver(Solver):
         :return: the solver instance with the computed option values
         """
 
+
+        logging.info(f"Starting {self.__class__.__name__} with {self.equation.s_nodes+1} spatial nodes and {self.equation.t_nodes+1} time nodes.")
         start = time.perf_counter()
 
         S = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
@@ -37,6 +47,7 @@ class BlackScholesExplicitSolver(Solver):
             dt = T[1] - T[0]
 
             if dt > dt_max:
+                logging.error(f'The supplied grid dimension do not satisfy the CFL condition.')
                 raise ValueError("User-defined t nodes is too small and exceeds the CFL condition. Possible action: Increase number of t nodes for stability!")
 
         ds = S[1] - S[0]
@@ -72,6 +83,8 @@ class BlackScholesExplicitSolver(Solver):
         end = time.perf_counter()
         duration = end - start
 
+        logging.info(f"Solver completed in {duration} seconds.")
+
         return sol.SolutionBlackScholes(V, T, S, dt, ds, duration, delta, gamma, theta, self.equation.option_type)
 
 
@@ -86,6 +99,8 @@ class BlackScholesCNSolver(Solver):
 
         :return: the solver instance with the computed option values
         """
+
+        logging.info(f"Starting {self.__class__.__name__} with {self.equation.s_nodes+1} spatial nodes and {self.equation.t_nodes+1} time nodes.")
 
         start = time.perf_counter()
         S = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
@@ -108,7 +123,7 @@ class BlackScholesCNSolver(Solver):
         theta = np.zeros((self.equation.s_nodes + 1, self.equation.t_nodes + 1))
 
 
-# setting terminal condition (for all values of S at time T)
+        # setting terminal condition (for all values of S at time T)
         if self.equation.option_type == enum.OptionType.EUROPEAN_CALL:
             V[:,-1] = np.maximum((S - self.equation.strike_price), 0)
 
@@ -141,6 +156,8 @@ class BlackScholesCNSolver(Solver):
 
         end = time.perf_counter()
         duration = end - start
+
+        logging.info(f"Solver completed in {duration} seconds.")
 
         return sol.SolutionBlackScholes(V, T, S, dt, ds, duration, delta, gamma, theta, self.equation.option_type)
 
