@@ -67,3 +67,6 @@ target_link_libraries(GPU_runner PRIVATE
         CUDA::cudart
 )
 
+# TESTING
+# ------------------------------------------
+add_subdirectory(tests)
