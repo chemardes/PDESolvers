@@ -451,7 +451,7 @@ Solution<T> solve_bse_explicit(T s_max,
     size_t grid_size = (t_nodes + 1) * (s_nodes + 1);
     T dt_max = 1 / (pow(s_nodes, 2) * pow(sigma, 2));
     T dS = s_max / static_cast<T> (s_nodes);
-    // calculates appropriate dt value (is it okay to put this here?)
+    // calculates appropriate dt value
     T dt = expiry / static_cast<T> (t_nodes);
     if (dt > dt_max) throw std::runtime_error("t_nodes too small");
 

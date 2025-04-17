@@ -7,13 +7,16 @@ name: Continuous integration
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner: [a40]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           architecture: 'x64'
-      - name: Run python tests
+      - name: Run tests
         run: |
-          bash ./ci/run_python_tests.sh
+          bash ./ci/run_tests.sh
