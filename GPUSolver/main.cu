@@ -14,6 +14,7 @@ int main() {
     Solution<double> solution1 = solve_bse_explicit<type>(s_max, expiry, sigma, rate, strike_price, s_nodes, t_nodes);
     Solution<double> solution2 = solve_bse_cn<type>(s_max, expiry, sigma, rate, strike_price, s_nodes, t_nodes);
 
+    std::cout << "Test" << std::endl;
 
     /* Print duration*/
     std::cout << "[GPU] Explicit method finished in " << solution1.m_duration << "s"
