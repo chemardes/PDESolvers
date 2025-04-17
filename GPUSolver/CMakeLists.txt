@@ -30,7 +30,9 @@ target_sources(CPU_runner
 )
 target_sources(GPU_runner
         PRIVATE
+        gpu/common.cuh
         gpu/bse_solvers_parallel.cuh
+        gpu/gbm_parallel.cuh
         main.cu
 )
 target_sources(CGSolver
