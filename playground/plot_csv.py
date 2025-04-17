@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load the CSV file into a pandas DataFrame
-file_path = '/Users/chemardes/Documents/repos/PDESolvers/pdesolvers/gbm.csv'
+file_path = '~/Documents/repos/PDESolvers/pdesolvers/gbm.csv'
 df = pd.read_csv(file_path)
 
 # Plot the data
