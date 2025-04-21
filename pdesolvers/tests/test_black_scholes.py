@@ -28,6 +28,8 @@ class TestBlackScholesSolvers:
 
     def setup_method(self):
         self.equation = bse.BlackScholesEquation(OptionType.EUROPEAN_CALL, 300, 100, 0.05, 0.2, 1, 100, 2000)
+        self.test_asset_grid = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
+        self.test_time_grid = self.equation.generate_grid(self.equation.expiry, self.equation.t_nodes)
 
     # explicit method tests
 
@@ -35,22 +37,39 @@ class TestBlackScholesSolvers:
         result = solver.BlackScholesExplicitSolver(self.equation).solve().get_result()
         assert np.all(result[0,:]) == 0
 
+    def test_check_upper_boundary_for_call_explicit(self):
+        result = solver.BlackScholesExplicitSolver(self.equation).solve().get_result()
+
+        expected_value = self.test_asset_grid[-1] - self.equation.strike_price * np.exp(-self.equation.rate * (self.equation.expiry - self.test_time_grid))
+        assert np.isclose(result[-1, :], expected_value, atol=1e-6).all()
+
     def test_check_terminal_condition_for_call_explicit(self):
         result = solver.BlackScholesExplicitSolver(self.equation).solve().get_result()
 
-        test_asset_grid = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
         test_strike_price = self.equation.strike_price
-        expected_payoff = np.maximum(test_asset_grid - test_strike_price, 0)
+        expected_payoff = np.maximum(self.test_asset_grid - test_strike_price, 0)
 
         assert np.array_equal(result[:, -1], expected_payoff)
+
+    def test_check_lower_boundary_for_put_explicit(self):
+        self.equation.option_type = OptionType.EUROPEAN_PUT
+        result = solver.BlackScholesExplicitSolver(self.equation).solve().get_result()
+
+        expected_value = self.equation.strike_price * np.exp(-self.equation.rate * (self.equation.expiry - self.test_time_grid))
+        assert np.isclose(result[0, :], expected_value, atol=1e-6).all()
+
+    def test_check_upper_boundary_for_put_explicit(self):
+        self.equation.option_type = OptionType.EUROPEAN_PUT
+        result = solver.BlackScholesExplicitSolver(self.equation).solve().get_result()
+
+        assert np.all(result[-1,:]) == 0
 
     def test_check_terminal_condition_for_put_explicit(self):
         self.equation.option_type = OptionType.EUROPEAN_PUT
         result = solver.BlackScholesExplicitSolver(self.equation).solve().get_result()
 
-        test_asset_grid = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
         test_strike_price = self.equation.strike_price
-        expected_payoff = np.maximum(test_strike_price - test_asset_grid, 0)
+        expected_payoff = np.maximum(test_strike_price - self.test_asset_grid, 0)
 
         assert np.array_equal(result[:,-1], expected_payoff)
 
@@ -66,22 +85,39 @@ class TestBlackScholesSolvers:
         result = solver.BlackScholesCNSolver(self.equation).solve().get_result()
         assert np.all(result[0,:]) == 0
 
+    def test_check_upper_boundary_for_call_cn(self):
+        result = solver.BlackScholesCNSolver(self.equation).solve().get_result()
+
+        expected_value = self.test_asset_grid[-1] - self.equation.strike_price * np.exp(-self.equation.rate * (self.equation.expiry - self.test_time_grid))
+        assert np.isclose(result[-1, :], expected_value, atol=1e-6).all()
+
     def test_check_terminal_condition_for_call_cn(self):
         result = solver.BlackScholesCNSolver(self.equation).solve().get_result()
 
-        test_asset_grid = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
         test_strike_price = self.equation.strike_price
-        expected_payoff = np.maximum(test_asset_grid - test_strike_price, 0)
+        expected_payoff = np.maximum(self.test_asset_grid - test_strike_price, 0)
 
         assert np.array_equal(result[:, -1], expected_payoff)
+
+    def test_check_lower_boundary_for_put_cn(self):
+        self.equation.option_type = OptionType.EUROPEAN_PUT
+        result = solver.BlackScholesCNSolver(self.equation).solve().get_result()
+
+        expected_value = self.equation.strike_price * np.exp(-self.equation.rate * (self.equation.expiry - self.test_time_grid))
+        assert np.isclose(result[0, :], expected_value, atol=1e-6).all()
+
+    def test_check_upper_boundary_for_cn(self):
+        self.equation.option_type = OptionType.EUROPEAN_PUT
+        result = solver.BlackScholesCNSolver(self.equation).solve().get_result()
+
+        assert np.all(result[-1,:]) == 0
 
     def test_check_terminal_condition_for_put_cn(self):
         self.equation.option_type = OptionType.EUROPEAN_PUT
         result = solver.BlackScholesCNSolver(self.equation).solve().get_result()
 
-        test_asset_grid = self.equation.generate_grid(self.equation.S_max, self.equation.s_nodes)
         test_strike_price = self.equation.strike_price
-        expected_payoff = np.maximum(test_strike_price - test_asset_grid, 0)
+        expected_payoff = np.maximum(test_strike_price - self.test_asset_grid, 0)
 
         assert np.array_equal(result[:,-1], expected_payoff)
 
