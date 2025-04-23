@@ -10,7 +10,7 @@ def mc_pricing_params():
     return {
         'S0': 100.0,
         'strike_price': 100.0,
-        'r': 0.05,
+        'mu': 0.05,
         'sigma': 0.2,
         'T': 1.0,
         'time_steps': 252,
@@ -31,7 +31,7 @@ class TestMonteCarlo:
         )
 
         mock_payoffs = np.maximum(np.array([110, 120, 90, 105, 115]) - mc_pricing_params['strike_price'], 0)
-        expected_price = np.exp(-mc_pricing_params['r'] * mc_pricing_params['T']) * np.mean(mock_payoffs)
+        expected_price = np.exp(-mc_pricing_params['mu'] * mc_pricing_params['T']) * np.mean(mock_payoffs)
 
         actual_price = test_mc.get_monte_carlo_option_price()
 
@@ -49,7 +49,7 @@ class TestMonteCarlo:
         )
 
         mock_payoffs = np.maximum(mc_pricing_params['strike_price'] - np.array([110, 120, 90, 105, 115]), 0)
-        expected_price = np.exp(-mc_pricing_params['r'] * mc_pricing_params['T']) * np.mean(mock_payoffs)
+        expected_price = np.exp(-mc_pricing_params['mu'] * mc_pricing_params['T']) * np.mean(mock_payoffs)
 
         actual_price = test_mc.get_monte_carlo_option_price()
 
