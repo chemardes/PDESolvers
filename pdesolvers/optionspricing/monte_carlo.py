@@ -14,7 +14,7 @@ logging.basicConfig(
 
 class MonteCarloPricing:
 
-    def __init__(self, option_type: OptionType, S0, strike_price, r, sigma, T, time_steps, sim, seed=None):
+    def __init__(self, option_type: OptionType, S0, strike_price, mu, sigma, T, time_steps, sim, seed=None):
         """
         Initialize the Geometric Brownian Motion model with the given parameters.
 
@@ -30,7 +30,7 @@ class MonteCarloPricing:
         self.__option_type = option_type
         self.__S0 = S0
         self.__strike_price = strike_price
-        self.__r = r
+        self.__mu = mu
         self.__sigma = sigma
         self.__T = T
         self.__time_steps = time_steps
@@ -60,7 +60,7 @@ class MonteCarloPricing:
         else:
             raise ValueError(f'Unsupported Option Type: {self.__option_type}')
 
-        option_price = np.exp(-self.__r * self.__T) * np.mean(self.__payoff)
+        option_price = np.exp(-self.__mu * self.__T) * np.mean(self.__payoff)
 
         logging.info(f"Option price calculated successfully with {self.__class__.__name__}.")
 
@@ -95,7 +95,7 @@ class MonteCarloPricing:
                 # updates brownian motion
                 B[i,j] = B[i,j-1] + np.sqrt(dt) * Z[i,j-1]
                 # calculates stock price based on the incremental difference
-                S[i,j] = S[i, j-1] * np.exp((self.__r - 0.5*self.__sigma**2)*dt + self.__sigma * (B[i, j] - B[i, j - 1]))
+                S[i,j] = S[i, j-1] * np.exp((self.__mu - 0.5*self.__sigma**2)*dt + self.__sigma * (B[i, j] - B[i, j - 1]))
 
         end = time.perf_counter()
         self.__duration = end - start
@@ -150,7 +150,7 @@ class MonteCarloPricing:
 
         return np.linspace(0, self.__T, self.__time_steps)
 
-    def plot_price_paths(self, export=False):
+    def plot_price_paths(self, closing_prices=None, export=False):
         """
         Plot the simulated stock prices for all simulations.
         """
@@ -170,6 +170,12 @@ class MonteCarloPricing:
         plt.title("Simulated Geometric Brownian Motion")
         plt.xlabel("Time (Years)")
         plt.ylabel("Stock Price")
+
+        if closing_prices is not None:
+            if len(closing_prices) != len(t):
+                raise ValueError("Length of closing prices does not match the number of time steps in the simulation.")
+
+            plt.plot(t , closing_prices, color='red')
 
         if export:
             plt.savefig("monte_carlo_prices.pdf", format="pdf", bbox_inches="tight")
@@ -199,7 +205,6 @@ class MonteCarloPricing:
 
         if export:
             plt.savefig("monte_carlo_prices.pdf", format="pdf", bbox_inches="tight", pad_inches=0.2)
-
             plt.show()
 
     def plot_distribution_of_payoff(self, export=False):
