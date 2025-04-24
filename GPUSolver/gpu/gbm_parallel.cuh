@@ -130,20 +130,21 @@ public:
 template<typename T = DEFAULT_FPX>
 SimulationResults<T> simulate(T initial_stock_price, T mu, T sigma, T time, int num_of_simulations, int time_steps)
 {
-    auto start = std::chrono::high_resolution_clock::now();
     size_t grid_size = num_of_simulations * time_steps;
 
     T *dev_grid;
     gpuErrChk(cudaMalloc(&dev_grid, grid_size * sizeof(T)));
+    auto start = std::chrono::high_resolution_clock::now();
 
     simulate_gbm<<<numBlocks(num_of_simulations), THREADS_PER_BLOCK>>>(dev_grid, initial_stock_price, mu, sigma, time, time_steps, num_of_simulations);
     gpuErrChk(cudaDeviceSynchronize());
 
     auto end = std::chrono::high_resolution_clock::now();
+
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
     SimulationResults<T> sol(dev_grid, num_of_simulations, time_steps);
-    sol.m_duration = (double) duration.count() / 1e6;
+    sol.m_duration = (double) duration.count() / 1e6 ;
 
     return sol;
 }

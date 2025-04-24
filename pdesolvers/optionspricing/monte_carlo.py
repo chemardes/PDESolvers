@@ -241,7 +241,7 @@ class MonteCarloPricing:
         if num_simulations_list is None:
             raise ValueError("Number of simulations need to be defined.")
 
-        errors = self.get_benchmark_errors(analytical_solution, num_simulations_list)
+        errors = self.get_benchmark_errors(analytical_solution, num_simulations_list, export=export)
 
         plt.rcParams['font.family'] = 'monospace'
         plt.rcParams['font.size'] = 10
