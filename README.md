@@ -140,7 +140,7 @@ error = solution1 - solution2
 ```python
 from pdesolvers import MonteCarloPricing, BlackScholesFormula, OptionType
 
-num_simulations_list = [ 20, 50, 100, 250, 500, 1000, 2500]
+num_simulations_list = [ 20, 50, 100, 250, 500, 1000, 2500 ]
 
 pricing_1 = BlackScholesFormula(OptionType.EUROPEAN_CALL, 300, 290, 0.05, 0.2, 1)
 pricing_2 = MonteCarloPricing(OptionType.EUROPEAN_CALL, 300, 290, 0.05, 0.2, 1, 365, 1000000, 78)
