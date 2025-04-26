@@ -42,6 +42,7 @@ PDESolvers/
 │   ├── gpu/                   # CUDA kernels and GPU logic
 │   ├── tests/                 # Tests for GPU and C++ logic
 ```
+> 📝 **Note:** The Python and C++/CUDA libraries are currently developed as separate components and are not integrated. The Python library can be used independently via PyPI, while the GPU-accelerated solvers are available as a standalone C++/CUDA project.
 
 ## 📊 Export Options
 Use **_export=True_** flags in plotting functions or benchmarking methods to export:
@@ -155,9 +156,6 @@ pricing_2.plot_convergence_analysis(bs_price, num_simulations_list=num_simulatio
 ## 🧠 Limitations
 - The package currently supports only one-dimensional PDEs.
 - Currently limited to vanilla European options.
-- GPU acceleration only implemented for finite difference methods. 
-
-> 📝 **Note:** The Python and C++/CUDA libraries are currently developed as separate components and are not integrated. The Python library can be used independently via PyPI, while the GPU-accelerated solvers are available as a standalone C++/CUDA project.
 
 ## 🔒 License
 This project is licensed under the Apache License 2.0. See the [LICENSE](./LICENSE.md) file for details.
