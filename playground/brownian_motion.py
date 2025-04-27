@@ -43,6 +43,9 @@ class BrownianMotion:
         t = self.__generate_grid()
         B = self.__get_paths()
 
+        plt.rcParams['font.family'] = 'monospace'
+        plt.rcParams['font.size'] = 18
+
         plt.figure(figsize=(10,6))
         for i in range(self.__sim):
             plt.plot(t, B[i], color='grey', alpha=0.3)
@@ -55,7 +58,7 @@ class BrownianMotion:
 
 
 def main():
-    BrownianMotion(T=1, time_steps=365, sim=200).simulate_bm().plot()
+    BrownianMotion(T=1, time_steps=365, sim=100).simulate_bm().plot()
 
 if __name__ == "__main__":
     main()

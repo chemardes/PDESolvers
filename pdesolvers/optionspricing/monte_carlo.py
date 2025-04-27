@@ -159,7 +159,7 @@ class MonteCarloPricing:
             raise RuntimeError("Plots cannot be generated because the simulation has not been run yet.")
 
         plt.rcParams['font.family'] = 'monospace'
-        plt.rcParams['font.size'] = 10
+        plt.rcParams['font.size'] = 18
 
         t = self.__generate_grid()
 
@@ -193,7 +193,7 @@ class MonteCarloPricing:
             raise RuntimeError("Plots cannot be generated because the simulation has not been run yet.")
 
         plt.rcParams['font.family'] = 'monospace'
-        plt.rcParams['font.size'] = 10
+        plt.rcParams['font.size'] = 18
 
         final_prices = self.__S[:, -1]
 
@@ -205,7 +205,8 @@ class MonteCarloPricing:
 
         if export:
             plt.savefig("monte_carlo_prices.pdf", format="pdf", bbox_inches="tight", pad_inches=0.2)
-            plt.show()
+
+        plt.show()
 
     def plot_distribution_of_payoff(self, export=False):
         """
@@ -217,7 +218,7 @@ class MonteCarloPricing:
             raise RuntimeError("Plots cannot be generated because the simulation has not been run yet.")
 
         plt.rcParams['font.family'] = 'monospace'
-        plt.rcParams['font.size'] = 10
+        plt.rcParams['font.size'] = 18
 
         plt.figure(figsize=(10, 6))
         plt.hist(self.__payoff, bins=50, edgecolor='darkblue', alpha=0.5, color='blue', density=True)
@@ -244,7 +245,7 @@ class MonteCarloPricing:
         errors = self.get_benchmark_errors(analytical_solution, num_simulations_list, export=export)
 
         plt.rcParams['font.family'] = 'monospace'
-        plt.rcParams['font.size'] = 10
+        plt.rcParams['font.size'] = 18
 
         fig, ax = plt.subplots(figsize=(10,6))
         ax.plot(num_simulations_list, errors, 'bo-', linewidth=2)
